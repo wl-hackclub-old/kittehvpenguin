@@ -1,5 +1,5 @@
-require_relative 'player'
-require 'gosu'
+require_relative "player"
+require "gosu"
 
 class GameWindow < Gosu::Window
 	def initialize
