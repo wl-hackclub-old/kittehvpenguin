@@ -13,8 +13,8 @@ class Player
 		@health
 	end
 
-	def oww
-		@health -= 1
+	def take_damage(amount = 1)
+		@health -= amount
 	end
 
 	def score

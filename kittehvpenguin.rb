@@ -37,7 +37,7 @@ class GameWindow < Gosu::Window
 			end
 
 			if button_down? Gosu::KbUp or button_down? Gosu::GpButton0 then
-				@player.oww
+				@player.take_damage(1)
 			end
 			@player.move
 		elsif @credits || !@safe
@@ -70,10 +70,10 @@ class GameWindow < Gosu::Window
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
-			@font.draw_rel("Written by the 2014 ACSL club for Mr Watson.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("Written by the 2013-2014 ACSL club for Mr Watson.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
 			@font.draw_rel("President: Alan Min; Vice President: Christopher Cooper", (width / 2), (height / 2) + 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
 			@font.draw_rel("Secretary: Melinda Crane; Head Programmer: Sam Mercier", (width / 2), (height / 2) + 45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
-			@font.draw_rel("Members: Sam Craig, Linus Lee", (width / 2), (height / 2) + 75, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("Members: Sam Craig, Linus Lee, Kristofer Rye", (width / 2), (height / 2) + 75, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
 		else
 			#Drawing Menu
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
