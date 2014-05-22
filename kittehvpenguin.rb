@@ -1,6 +1,7 @@
 #! /usr/bin/env ruby
 require_relative "player"
 require_relative "health"
+require_relative "constants"
 require "gosu"
 
 module ZOrder
@@ -17,7 +18,7 @@ class GameWindow < Gosu::Window
 		@credits = false
 		@safe = true
 
-		@background_image = Gosu::Image.new(self, "media/bg.png", true)
+		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
 		@player = Player.new(self)
 		@player.warp(320, 240)
