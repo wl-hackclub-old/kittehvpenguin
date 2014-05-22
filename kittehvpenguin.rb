@@ -1,6 +1,7 @@
 #! /usr/bin/env ruby
 require_relative "player"
 require_relative "health"
+require_relative "snowball"
 require "gosu"
 
 module ZOrder
@@ -24,6 +25,8 @@ class GameWindow < Gosu::Window
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 		@health = Health.new(self)
+
+		@snowball = Snowball.new(self)
 	end
 
 	def update
@@ -66,6 +69,7 @@ class GameWindow < Gosu::Window
 			@font.draw_rel("#{@player.score}", 630, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
 			@font.draw("Health: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
 			@health.draw_health(@player.health, 72, 13)
+			@snowball.draw
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
