@@ -32,9 +32,10 @@ class GameWindow < Gosu::Window
 			if button_down? Gosu::KbRight or button_down? Gosu::GpRight then
 				@player.move_right
 			end
-			# if button_down? Gosu::KbUp or button_down? Gosu::GpButton0 then
-			# 	@player.accelerate
-			# end
+
+			if button_down? Gosu::KbUp or button_down? Gosu::GpButton0 then
+				@player.oww
+			end
 			@player.move
 		else
 			#Menu Controls

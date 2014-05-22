@@ -12,6 +12,10 @@ class Player
 		@health
 	end
 
+	def oww
+		@health -= 1
+	end
+
 	def score
 		@score
 	end
