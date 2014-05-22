@@ -1,5 +1,6 @@
 #! /usr/bin/env ruby
 require_relative "player"
+require_relative "health"
 require "gosu"
 
 module ZOrder
@@ -20,6 +21,7 @@ class GameWindow < Gosu::Window
 		@player.warp(320, 240)
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
+		@health = Health.new(self)
 	end
 
 	def update
@@ -52,6 +54,7 @@ class GameWindow < Gosu::Window
 			@background_image.draw(0, 0, ZOrder::Background)
 			@player.draw
 			@font.draw("Score: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
+			@health.draw_health(@player.health, 10, 30)
 		else
 			#Drawing Menu
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
