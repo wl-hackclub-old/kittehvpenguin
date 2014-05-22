@@ -2,10 +2,16 @@
 require_relative "player"
 require "gosu"
 
+module ZOrder
+  Background, Stars, Player, UI = *0..3
+end
+
 class GameWindow < Gosu::Window
 	def initialize
 		super 640, 480, false
 		self.caption = "Teh Kittehs"
+
+		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 
 		@background_image = Gosu::Image.new(self, "media/bg.png", true)
 
@@ -27,8 +33,9 @@ class GameWindow < Gosu::Window
 	end
 
 	def draw
+		@background_image.draw(0, 0, ZOrder::Background)
 		@player.draw
-		@background_image.draw(0, 0, 0)
+		@font.draw("Score: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
 	end
 	def button_down(id)
 		if id == Gosu::KbEscape
