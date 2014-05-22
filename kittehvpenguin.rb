@@ -32,6 +32,7 @@ class GameWindow < Gosu::Window
 			if button_down? Gosu::KbLeft or button_down? Gosu::GpLeft then
 				@player.move_left
 			end
+
 			if button_down? Gosu::KbRight or button_down? Gosu::GpRight then
 				@player.move_right
 			end
@@ -39,6 +40,7 @@ class GameWindow < Gosu::Window
 			if button_down? Gosu::KbUp or button_down? Gosu::GpButton0 then
 				@player.take_damage(1)
 			end
+
 			@player.move
 		elsif @credits || !@safe
 			if button_down? Gosu::KbEscape then
@@ -56,7 +58,6 @@ class GameWindow < Gosu::Window
 				@credits = true
 			end
 		end
-
 	end
 
 	def draw
@@ -82,6 +83,7 @@ class GameWindow < Gosu::Window
 			@font.draw_rel("Exit (Escape)", (width / 2) , (height / 2) + 45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
 		end
 	end
+
 	def button_up(id)
 		#Open Menu Code
 		if id == Gosu::KbEscape
