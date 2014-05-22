@@ -40,7 +40,6 @@ class Player
 		end
 
 		@vel_x *= 0.95
-		puts @x
 	end
 
 	def draw
