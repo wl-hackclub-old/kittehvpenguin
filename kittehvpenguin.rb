@@ -12,6 +12,7 @@ class GameWindow < Gosu::Window
 		self.caption = "Teh Kittehs"
 
 		@menu = true
+		@in_game = false
 
 		@background_image = Gosu::Image.new(self, "media/bg.png", true)
 
@@ -37,6 +38,7 @@ class GameWindow < Gosu::Window
 			#Menu Controls
 			if button_down? Gosu::KbEnter or button_down? Gosu::KbReturn then
 				@menu = false
+				@in_game = true
 			elsif button_down? Gosu::KbEscape then
 				close
 			end
@@ -52,7 +54,7 @@ class GameWindow < Gosu::Window
 			@font.draw("Score: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
 		else
 			#Drawing Menu
-			@font.draw_rel("Start (enter)", (width / 2) , (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
+			@font.draw_rel(@in_game ? "Continue (enter)" : "Start (enter)", (width / 2) , (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
 			@font.draw_rel("Exit (esc)", (width / 2) , (height / 2) + 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
 		end
 	end
