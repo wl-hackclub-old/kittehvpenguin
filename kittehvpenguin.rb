@@ -17,8 +17,8 @@ class GameWindow < Gosu::Window
 
 		@background_image = Gosu::Image.new(self, "media/bg.png", true)
 
-		@player = Player.new(self)
-		@player.warp(320, 240)
+		@player = Player.new(self, -180, 240)
+		@player.warp(0, 0)
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 		@health = Health.new(self)
@@ -34,7 +34,7 @@ class GameWindow < Gosu::Window
 			end
 
 			if button_down? Gosu::KbUp or button_down? Gosu::GpButton0 then
-				@player.oww
+				@player.health -= 1
 			end
 			@player.move
 		else
