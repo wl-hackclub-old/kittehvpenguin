@@ -2,38 +2,48 @@ require 'gosu'
 class Player
 	def initialize(window)
 		@image = Gosu::Image.new(window, "media/hero.png", false)
-		@x = @y = @vel_x = @vel_y = @angle = 0.0
+		@x = @y = @vel_x = 0.0
 		@score = 0
+		@health = 10
+		@score = 10000
+	end
+
+	def health
+		@health
+	end
+
+	def oww
+		@health -= 1
+	end
+
+	def score
+		@score
 	end
 
 	def warp(x, y)
 		@x, @y = x, y
 	end
 
-	def turn_left
-		@angle -= 4.5
+	def move_left
+		@vel_x -= 2
 	end
 
-	def turn_right
-		@angle += 4.5
-	end
-
-	def accelerate
-		@vel_x += Gosu::offset_x(@angle, 0.5)
-		@vel_y += Gosu::offset_y(@angle, 0.5)
+	def move_right
+		@vel_x += 2
 	end
 
 	def move
-		@x += @vel_x
-		@y += @vel_y
-		@x %= 640
-		@y %= 480
+		if ((@x >= 320 && @vel_x <= 0) || (@x <= 160 && @vel_x >=0))
+			@x += @vel_x
+		elsif @x < 320 && @x > 160
+			@x += @vel_x
+		end
 
 		@vel_x *= 0.95
-		@vel_y *= 0.95
+		puts @x
 	end
 
 	def draw
-		@image.draw_rot(@x, @y, 1, @angle)
+		@image.draw(@x, @y, ZOrder::Player)
 	end
 end

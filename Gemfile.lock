@@ -30,5 +30,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  gosu
+  gosu (~> 0.7.50)
   releasy
