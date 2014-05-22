@@ -1,4 +1,5 @@
-require 'gosu'
+require "gosu"
+
 class Circle
   attr_reader :columns, :rows
 

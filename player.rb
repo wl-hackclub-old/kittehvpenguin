@@ -1,4 +1,5 @@
-require 'gosu'
+require "gosu"
+
 class Player
 	def initialize(window)
 		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "hero.png"), false)
