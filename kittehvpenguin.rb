@@ -3,7 +3,7 @@ require_relative "player"
 require "gosu"
 
 module ZOrder
-	Background, Stars, Player, UI = *0..3
+	Background, Snowball, Player, UI = *0..3
 end
 
 class GameWindow < Gosu::Window
