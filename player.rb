@@ -5,10 +5,15 @@ class Player
 		@x = @y = @vel_x = 0.0
 		@score = 0
 		@health = 10
+		@score = 10000
 	end
 
 	def health
 		@health
+	end
+
+	def score
+		@score
 	end
 
 	def warp(x, y)

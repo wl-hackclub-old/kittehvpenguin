@@ -53,9 +53,9 @@ class GameWindow < Gosu::Window
 			#Drawing Actors
 			@background_image.draw(0, 0, ZOrder::Background)
 			@player.draw
-			@font.draw("Score: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
-			@font.draw("Health: ", 10, 30, ZOrder::UI, 1.0, 1.0, 0xffffff00)
-			@health.draw_health(@player.health, 70, 34)
+			@font.draw_rel("#{@player.score}", 630, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
+			@font.draw("Health: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
+			@health.draw_health(@player.health, 72, 13)
 		else
 			#Drawing Menu
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
