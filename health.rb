@@ -22,20 +22,20 @@ class Circle
 end
 
 class Health
-	def initialize window
+	def initialize(window)
 		@@img = Gosu::Image.new(window, Circle.new(5), false)
 	end
-	def draw_health hlth, xpos, ypos
-		if hlth > 6
 
+	def draw_health(health, xpos, ypos)
+		if health > 6
 			@color = 0xff00ff00
-		elsif hlth > 3
+		elsif health > 3
 			@color = 0xffffff30
 		else
 			@color = 0xffff0000
 		end
 
-		hlth.times do
+		health.times do
 			@@img.draw(xpos, ypos, ZOrder::UI, 1.0, 1.0, @color)
 
 			xpos += 12
