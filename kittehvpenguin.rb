@@ -14,7 +14,7 @@ end
 
 class GameWindow < Gosu::Window
 	def initialize
-		super 800, 400, false
+		super 800, 500, false
 		self.caption = "Teh Kittehs"
 
 		@menu = true
@@ -47,6 +47,8 @@ class GameWindow < Gosu::Window
 
 		@kittyrespawn = Gosu::milliseconds
 		@enemyrespawn = false
+
+		@tile = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "tile.png"), false)
 	end
 
 	# (x1, y1) is the upper left corner
@@ -78,7 +80,7 @@ class GameWindow < Gosu::Window
 			@enemysnowballs = []
 			@difficulty = 1
 			# @kitty = Kitty.new(self)
-			@enemy = Enemy.new(self, 0.03 * Math.sqrt(@difficulty), rand(2) + 1)
+			@enemy = Enemy.new(self, 0.03 * Math.sqrt(@difficulty), rand(3) + 1)
 			@kittyrespawn = Gosu::milliseconds
 			@enemyrespawn = false
 		end
@@ -149,7 +151,7 @@ class GameWindow < Gosu::Window
 			end
 
 			if @enemyrespawn && (Gosu::milliseconds - @enemyrespawn > 500)
-				@enemy = Enemy.new(self, 0.03 * Math.sqrt(@difficulty), rand(2) + 1)
+				@enemy = Enemy.new(self, 0.03 * Math.sqrt(@difficulty), rand(3) + 1)
 				@enemyrespawn = false
 			end
 
@@ -193,11 +195,15 @@ class GameWindow < Gosu::Window
 			@enemysnowballs.each do |s|
 				s.draw
 			end
-			if @game_over
-				@font.draw_rel("You scored #{@player.score}.", (width / 2), (height / 2) - 70, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffffffff)
-				@font.draw_rel("Game Over.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffff0000)
-				@font.draw_rel("Press R to restart.", (width / 2), (height / 2) + 20, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffff0000)
+			x_dinge = 0
+			while x_dinge < self.width do
+				@tile.draw(self.height, x_dinge, ZOrder::Background )
+				x_dinge += @tile.width
 			end
+		elsif @game_over
+			@font.draw_rel("You scored #{@player.score}.", (width / 2), (height / 2) - 70, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffffffff)
+			@font.draw_rel("Game Over.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffff0000)
+			@font.draw_rel("Press R to restart.", (width / 2), (height / 2) + 20, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffff0000)
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)

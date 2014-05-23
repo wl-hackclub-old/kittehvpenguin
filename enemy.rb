@@ -2,7 +2,7 @@ require "gosu"
 
 class Enemy < Player
 	def initialize(window, fireprobz, teachernum)
-		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, teachernum == 1 ? "teacher1.png" : "teacher2.png"), false)
+		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "teacher#{teachernum}.png"), false)
 		@window = window
 		@fireprobz = fireprobz
 
