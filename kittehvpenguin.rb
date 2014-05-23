@@ -14,7 +14,7 @@ end
 
 class GameWindow < Gosu::Window
 	def initialize
-		super 800, 500, false
+		super 800, 400, false
 		self.caption = "Teh Kittehs"
 
 		@menu = true
@@ -48,7 +48,6 @@ class GameWindow < Gosu::Window
 		@kittyrespawn = Gosu::milliseconds
 		@enemyrespawn = false
 
-		@tile = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "tile.png"), false)
 	end
 
 	# (x1, y1) is the upper left corner
@@ -172,6 +171,18 @@ class GameWindow < Gosu::Window
 				close
 			elsif button_down? Gosu::KbC
 				@credits = true
+			elsif button_down? Gosu::KbR
+				@game_over = false
+				@player = Player.new(self, 0, self.width / 2, 0, self.height)
+				@player.warp(0, height - 100)
+				@snowballs = []
+				@enemysnowballs = []
+				@difficulty = 1
+				# @kitty = Kitty.new(self)
+				@enemy = Enemy.new(self, 0.03 * Math.sqrt(@difficulty), rand(3) + 1)
+				@kittyrespawn = Gosu::milliseconds
+				@enemyrespawn = false
+				@menu = false
 			end
 		end
 	end
@@ -195,11 +206,6 @@ class GameWindow < Gosu::Window
 			@enemysnowballs.each do |s|
 				s.draw
 			end
-			x_dinge = 0
-			while x_dinge < self.width do
-				@tile.draw(self.height, x_dinge, ZOrder::Background )
-				x_dinge += @tile.width
-			end
 			if @game_over
 				@font.draw_rel("You scored #{@player.score}.", (width / 2), (height / 2) - 70, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffffffff)
 				@font.draw_rel("Game Over.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffff0000)
@@ -217,8 +223,9 @@ class GameWindow < Gosu::Window
 		else
 			#Drawing Menu
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
-			@font.draw_rel(@in_game ? "Continue (Enter)" : "Start (Enter)", (width / 2) , (height / 2) - 45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
-			@font.draw_rel("Credits (C)", (width / 2) , (height / 2), ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
+			@font.draw_rel(@in_game ? "Continue (Enter)" : "Start (Enter)", (width / 2) , (height / 2) -45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
+			@font.draw_rel("New Game (R)", (width / 2) , (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
+			@font.draw_rel("Credits (C)", (width / 2) , (height / 2) + 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
 			@font.draw_rel("Exit (Escape)", (width / 2) , (height / 2) + 45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
 		end
 	end
