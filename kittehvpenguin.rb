@@ -200,10 +200,11 @@ class GameWindow < Gosu::Window
 				@tile.draw(self.height, x_dinge, ZOrder::Background )
 				x_dinge += @tile.width
 			end
-		elsif @game_over
-			@font.draw_rel("You scored #{@player.score}.", (width / 2), (height / 2) - 70, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffffffff)
-			@font.draw_rel("Game Over.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffff0000)
-			@font.draw_rel("Press R to restart.", (width / 2), (height / 2) + 20, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffff0000)
+			if @game_over
+				@font.draw_rel("You scored #{@player.score}.", (width / 2), (height / 2) - 70, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffffffff)
+				@font.draw_rel("Game Over.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffff0000)
+				@font.draw_rel("Press R to restart.", (width / 2), (height / 2) + 20, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffff0000)
+			end
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
