@@ -24,22 +24,33 @@ class GameWindow < Gosu::Window
 		@health = Health.new(self)
 	end
 
+	def button_down(key)
+		case key
+		when Gosu::KbDown
+			@player.health -= 1
+		when Gosu::KbUp
+			@player.health += 1
+		when Gosu::GpButton0
+			@player.health -= 1
+		when Gosu::GpButton1
+			@player.health += 1
+		end
+	end
+
 	def update
 		if !@menu
-			if button_down? Gosu::KbLeft or button_down? Gosu::GpLeft then
+			if button_down?(Gosu::KbLeft) || button_down?(Gosu::GpLeft)
 				@player.move_left
 			end
-			if button_down? Gosu::KbRight or button_down? Gosu::GpRight then
+
+			if button_down?(Gosu::KbRight) || button_down?(Gosu::GpRight)
 				@player.move_right
 			end
 
-			if button_down? Gosu::KbUp or button_down? Gosu::GpButton0 then
-				@player.health -= 1
-			end
 			@player.move
 		else
 			#Menu Controls
-			if button_down? Gosu::KbEnter or button_down? Gosu::KbReturn then
+			if button_down? Gosu::KbEnter or button_down? Gosu::KbReturn
 				@menu = false
 				@in_game = true
 			elsif button_down? Gosu::KbEscape then
