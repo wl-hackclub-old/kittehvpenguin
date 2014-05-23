@@ -2,7 +2,7 @@ require "gosu"
 
 class Player
 	def initialize(window, minx, maxx, miny, maxy)
-		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "hero.png"), false)
+		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "penguin.png"), false)
 		@x = @y = @vel_x = @vel_y = 0.0
 		@score = 0
 		@health = 10

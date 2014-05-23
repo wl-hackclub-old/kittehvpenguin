@@ -26,7 +26,7 @@ class GameWindow < Gosu::Window
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
 		@player = Player.new(self, 0, self.width / 2, 0, self.height)
-		@player.warp(0, height - 128)
+		@player.warp(0, height - 100)
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 		@health = Health.new(self)
@@ -56,7 +56,7 @@ class GameWindow < Gosu::Window
 			if @game_over
 				@game_over = false
 				@player = Player.new(self, 0, self.width / 2, 0, self.height)
-				@player.warp(0, height - 128)
+				@player.warp(0, height - 100)
 				@snowballs = []
 				@kittysnowballs = []
 				@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
@@ -110,7 +110,7 @@ class GameWindow < Gosu::Window
 			@kitty.move
 			@kittysnowballs.each do |s|
 				s.move
-				if s.clip(@player.x, @player.y, @player.x + 128, @player.y + 128)
+				if s.clip(@player.x, @player.y, @player.x + 100, @player.y + 100)
 					@player.take_damage 1
 					s.x = -100 # dirty hack to get it off the screen (and no longer clipping)
 				end
