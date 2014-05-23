@@ -17,6 +17,7 @@ class Player
 	attr_reader :health
 
 	# we could also just have a setter then do @player.health =- blah
+	# or use attr_accessor
 	def take_damage(amount = 1)
 		@health -= amount
 	end
@@ -44,7 +45,7 @@ class Player
 			@x = @boundr
 		end
 
-		@vel_x *= 0.95
+		@vel_x *= 0.80
 	end
 
 	def draw
