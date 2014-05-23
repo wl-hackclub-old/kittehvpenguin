@@ -3,10 +3,10 @@ require "gosu"
 class Player
 	def initialize(window)
 		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "hero.png"), false)
-		@x = @y = @vel_x = 0.0
+		@x = @y = @vel_x = @vel_y = 0.0
 		@score = 0
 		@health = 10
-		@score = 10000
+		@score = 0
 	end
 
 	def health
@@ -19,6 +19,10 @@ class Player
 
 	def score
 		@score
+	end
+
+	def cats(amount = 1)
+		@score += amount
 	end
 
 	def warp(x, y)
@@ -40,7 +44,19 @@ class Player
 			@x += @vel_x
 		end
 
+		@y += @vel_y
+
+		@vel_y *= 0.65
+
 		@vel_x *= 0.95
+	end
+
+	def x
+		@x
+	end
+
+	def y
+		@y
 	end
 
 	def draw
