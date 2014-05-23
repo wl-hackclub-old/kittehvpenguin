@@ -1,7 +1,7 @@
 require "gosu"
 
 class Player
-	def initialize(window, minx, maxx)
+	def initialize(window, minx, maxx, miny, maxy)
 		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "hero.png"), false)
 		@x = @y = @vel_x = @vel_y = 0.0
 		@score = 0
@@ -12,6 +12,8 @@ class Player
 		@minx = minx
 		@maxx = maxx
 
+		@miny = miny
+		@maxy = maxy
 	end
 
 	attr_accessor :minx
@@ -45,6 +47,10 @@ class Player
 		@vel_x += 2
 	end
 
+	def jump
+		@vel_y -= 4
+	end
+
 	def move
 		@x += @vel_x
 
@@ -56,7 +62,14 @@ class Player
 
 		@y += @vel_y
 
-		@vel_y *= 0.65
+		if @y < @miny
+			@y = @miny
+		elsif @y > @maxy - @image.height
+			@y = @maxy - @image.height
+			@vel_y = 0.0
+		end
+
+		@vel_y += 1.0
 		@vel_x *= 0.80
 	end
 

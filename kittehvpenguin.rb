@@ -23,7 +23,7 @@ class GameWindow < Gosu::Window
 
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
-		@player = Player.new(self, 0, self.width)
+		@player = Player.new(self, 0, self.width, 0, self.height)
 		@player.warp(0, 0)
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
@@ -36,12 +36,16 @@ class GameWindow < Gosu::Window
 
 	def update
 		if !@menu
-			if button_down?(Gosu::KbLeft) || button_down?(Gosu::GpLeft)
+			if button_down?(Gosu::KbLeft) || button_down?(Gosu::GpLeft) || button_down?(Gosu::KbA)
 				@player.move_left
 			end
 
-			if button_down?(Gosu::KbRight) || button_down?(Gosu::GpRight)
+			if button_down?(Gosu::KbRight) || button_down?(Gosu::GpRight) || button_down?(Gosu::KbD)
 				@player.move_right
+			end
+
+			if button_down?(Gosu::KbW)
+				@player.jump
 			end
 
 			if button_down? Gosu::KbSpace then
