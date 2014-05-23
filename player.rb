@@ -6,13 +6,12 @@ class Player
 		@x = @y = @vel_x = @vel_y = 0.0
 		@score = 0
 		@health = 10
-<<<<<<< HEAD
+
 		@score = 0
-=======
-		@score = 10000
+
 		@boundl = boundl
 		@boundr = boundr
->>>>>>> 021c380dd71c5587dc0f6d2a8cfbb754c9df85c2
+
 	end
 
 	attr_accessor :boundl

@@ -29,13 +29,9 @@ class GameWindow < Gosu::Window
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 		@health = Health.new(self)
 
-<<<<<<< HEAD
 		@snowballs = []
-=======
-		@snowball = Snowball.new(self)
 
 		@kitty = Kitty.new(self)
->>>>>>> 021c380dd71c5587dc0f6d2a8cfbb754c9df85c2
 	end
 
 	def update
@@ -48,7 +44,6 @@ class GameWindow < Gosu::Window
 				@player.move_right
 			end
 
-<<<<<<< HEAD
 			if button_down? Gosu::KbSpace then
 				if @can_shoot
 					@snowballs[@snowballs.length] = Snowball.new(self, @player.x + 20, @player.y + 30, true)
@@ -61,10 +56,7 @@ class GameWindow < Gosu::Window
 				s.move
 			end
 
-=======
-			@player.move
 			@kitty.move
->>>>>>> 021c380dd71c5587dc0f6d2a8cfbb754c9df85c2
 		elsif @credits || !@safe
 			if button_down? Gosu::KbEscape then
 				@credits = false
@@ -91,14 +83,10 @@ class GameWindow < Gosu::Window
 			@font.draw_rel("#{@player.score}", self.width - 10, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
 			@font.draw("Health: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
 			@health.draw_health(@player.health, 72, 13)
-<<<<<<< HEAD
 			@snowballs.each do |s|
 				s.draw
 			end
-=======
-			@snowball.draw
 			@kitty.draw
->>>>>>> 021c380dd71c5587dc0f6d2a8cfbb754c9df85c2
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
@@ -130,7 +118,7 @@ class GameWindow < Gosu::Window
 		when Gosu::KbEscape
 			@safe = true
 			@menu = true
-		elsif id == Gosu::KbSpace
+		when Gosu::KbSpace
 			@can_shoot = true
 		end
 	end
