@@ -24,14 +24,16 @@ class Snowball
 		end
 	end
 
-	def move
-		@x += @vel_x
+	def width
+		@img.width
 	end
 
-	# (x1, y1) is the upper left corner
-	# (x2, y2) is the bottom right corner
-	def clip(x1, y1, x2, y2)
-		(@x < x2 && (@x + 20) > x1) && (@y < y2 && (@y + 20) > y1)
+	def height
+		@img.height
+	end
+
+	def move
+		@x += @vel_x
 	end
 
 	def draw

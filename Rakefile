@@ -10,7 +10,7 @@ Releasy::Project.new do
 
 	executable "kittehvpenguin.rb"
 	# files ["lib/**/*.rb", "config/**/*.yml", "media/**/*.*"]
-	files ["*.rb", "media/*.png"]
+	files ["*.rb", "media/*.png", "media/*.wav"]
 	# exposed_files ["README.html", "LICENSE.txt"]
 	# add_link "http://my_application.github.com", "My Application website"
 	exclude_encoding # Applications that don't use advanced encoding (e.g. Japanese characters) can save build size with this.

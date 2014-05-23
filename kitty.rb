@@ -1,12 +1,11 @@
 require "gosu"
 
 class Kitty
-	def initialize(window, fireprobz)
+	def initialize(window)
 		@img = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "kitteh.png"), false)
 		@window = window
-		@fireprobz = fireprobz
 
-		@x = rand * 360 + 460
+		@x = rand * 320
 		@t = rand * Math::PI
 	end
 
@@ -21,22 +20,12 @@ class Kitty
 	end
 
 	def y
-		Math.sin(@t) * 80 + 360
+		Math.sin(@t) * 40 + 180
 	end
 
 	def move
 		@t += 0.065
 		@t = @t % (Math::PI * 2)
-	end
-
-	def fire
-		Snowball.new(@window, @x + 10, y + 80, false)
-	end
-
-	def fire?
-		if rand < @fireprobz
-			self.fire
-		end
 	end
 
 	def draw

@@ -6,14 +6,15 @@ require_relative "health"
 require_relative "kitty"
 require_relative "player"
 require_relative "snowball"
+require_relative "enemy"
 
 module ZOrder
-	Background, Player, Kitty, Snowball, UI = *0..4
+	Background, Player, Enemy, Kitty, Snowball, UI = *0..5
 end
 
 class GameWindow < Gosu::Window
 	def initialize
-		super 1024, 640, false
+		super 800, 400, false
 		self.caption = "Teh Kittehs"
 
 		@menu = true
@@ -25,6 +26,11 @@ class GameWindow < Gosu::Window
 
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
+		# Seems horribly broken for some reason
+		# @song = Gosu::Song.new(self, File.join(Constants::RESOURCE_DIRECTORY, "SoftKitty.wav"))
+		# @song.volume = 0.1
+		# @song.play(false)
+
 		@player = Player.new(self, 0, self.width / 2, 0, self.height)
 		@player.warp(0, height - 100)
 
@@ -34,9 +40,20 @@ class GameWindow < Gosu::Window
 
 		@snowballs = []
 
-		@kittysnowballs = []
+		@enemysnowballs = []
 
-		@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
+		# @kitty = Kitty.new(self)
+		@enemy = Enemy.new(self, 0.03 * Math.sqrt(@difficulty), rand(2) + 1)
+
+		@kittyrespawn = Gosu::milliseconds
+		@enemyrespawn = false
+	end
+
+	# (x1, y1) is the upper left corner
+	# (x2, y2) is the bottom right corner
+	# a and b refer to two different rectangles
+	def clip(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2)
+		((ax1 < bx2) && (ax2 > bx1)) && ((ay1 < by2) && (ay2 > by1))
 	end
 
 	def button_down(id)
@@ -50,18 +67,20 @@ class GameWindow < Gosu::Window
 		when Gosu::KbSpace
 			if !@game_over && @player.snowballs > 0
 				@snowballs << Snowball.new(self, @player.x + @player.width - 10, @player.y + 30, true)
+				@enemy.playerfire unless @enemyrespawn
 				@player.snowballs -= 1
 			end
 		when Gosu::KbR
-			if @game_over
-				@game_over = false
-				@player = Player.new(self, 0, self.width / 2, 0, self.height)
-				@player.warp(0, height - 100)
-				@snowballs = []
-				@kittysnowballs = []
-				@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
-				@difficulty = 1
-			end
+			@game_over = false
+			@player = Player.new(self, 0, self.width / 2, 0, self.height)
+			@player.warp(0, height - 100)
+			@snowballs = []
+			@enemysnowballs = []
+			@difficulty = 1
+			# @kitty = Kitty.new(self)
+			@enemy = Enemy.new(self, 0.03 * Math.sqrt(@difficulty), rand(2) + 1)
+			@kittyrespawn = Gosu::milliseconds
+			@enemyrespawn = false
 		end
 	end
 
@@ -90,30 +109,48 @@ class GameWindow < Gosu::Window
 				end
 			end
 
-			if (snowball = @kitty.fire?)
-				@kittysnowballs << snowball
+			if !@enemyrespawn && (snowball = @enemy.fire?)
+				@enemysnowballs << snowball
 			end
 
 			@player.move
 			@snowballs.each do |s|
 				s.move
-				if s.clip(@kitty.x, @kitty.y, @kitty.x + @kitty.width, @kitty.y + @kitty.height)
-					@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
+				if !@enemyrespawn && clip(@enemy.x, @enemy.y, @enemy.x + @enemy.width, @enemy.y + @enemy.height, s.x, s.y, s.x + s.width, s.y + s.height)
+					@enemyrespawn = Gosu::milliseconds
 					@player.cats @difficulty
-					@player.snowballs += 2 if @player.snowballs <= 30
-					@player.take_damage -3
+					@player.snowballs += 1 if @player.snowballs <= 30
+					@player.take_damage -1
 					@difficulty += 1
 					s.x = 1200 # dirty hack to get it off the screen (and no longer clipping)
 				end
 			end
 
-			@kitty.move
-			@kittysnowballs.each do |s|
+			@kitty.move unless @kittyrespawn
+
+			@enemy.move? unless @enemyrespawn
+			@enemysnowballs.each do |s|
 				s.move
-				if s.clip(@player.x, @player.y, @player.x + 100, @player.y + 100)
+				if clip(@player.x, @player.y, @player.x + 100, @player.y + 100, s.x, s.y, s.x + s.width, s.y + s.height)
 					@player.take_damage 1
 					s.x = -100 # dirty hack to get it off the screen (and no longer clipping)
 				end
+			end
+
+			if !@kittyrespawn && clip(@player.x, @player.y, @player.x + 100, @player.y + 100, @kitty.x, @kitty.y, @kitty.x + @kitty.width, @kitty.y + @kitty.height)
+				@kittyrespawn = Gosu::milliseconds
+				@player.snowballs += 5 if @player.snowballs <= 30
+				@player.take_damage -5
+			end
+
+			if @kittyrespawn && (Gosu::milliseconds - @kittyrespawn > 3000) && rand < 0.005
+				@kitty = Kitty.new(self)
+				@kittyrespawn = false
+			end
+
+			if @enemyrespawn && (Gosu::milliseconds - @enemyrespawn > 500)
+				@enemy = Enemy.new(self, 0.03 * Math.sqrt(@difficulty), rand(2) + 1)
+				@enemyrespawn = false
 			end
 
 			if @player.health <= 0
@@ -151,8 +188,9 @@ class GameWindow < Gosu::Window
 			@snowballs.each do |s|
 				s.draw
 			end
-			@kitty.draw
-			@kittysnowballs.each do |s|
+			@kitty.draw unless @kittyrespawn
+			@enemy.draw unless @enemyrespawn
+			@enemysnowballs.each do |s|
 				s.draw
 			end
 			if @game_over
@@ -163,12 +201,12 @@ class GameWindow < Gosu::Window
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
-			@font.draw_rel("Written by the 2013-2014 ACSL club for Mr Watson.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
-			@font.draw_rel("President: Alan Min; Vice President: Christopher Cooper", (width / 2), (height / 2) + 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
-			@font.draw_rel("Secretary: Melinda Crane; Head Programmer: Sam Mercier", (width / 2), (height / 2) + 45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
-			@font.draw_rel("Members: Sam Craig, Linus Lee, Kristofer Rye", (width / 2), (height / 2) + 75, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
-			@font.draw_rel("import made.with.love;", (width / 2), height - 30, ZOrder::UI, 0.5, 1.0, 1.0, 1.0, 0xffffffff)
-			@font.draw_rel("System.out.println(\"Thank you so much Mr Watson!\");", (width / 2), height, ZOrder::UI, 0.5, 1.0, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("Written by the 2013-2014 ACSL club for Mr Watson.", (width / 2), (height / 2) - 50, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("President: Alan Min; Vice President: Christopher Cooper", (width / 2), (height / 2) -20, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("Secretary: Melinda Crane; Head Programmer: Sam Mercier", (width / 2), (height / 2) + 10, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("Members: Sam Craig, Linus Lee, Kristofer Rye", (width / 2), (height / 2) + 40, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("import made.with.love;", (width / 2), height - 80, ZOrder::UI, 0.5, 1.0, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("System.out.println(\"Thank you so much Mr Watson!\");", (width / 2), height - 50, ZOrder::UI, 0.5, 1.0, 1.0, 1.0, 0xffffffff)
 		else
 			#Drawing Menu
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
