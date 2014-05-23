@@ -9,8 +9,8 @@ class Player
 
 		@score = 0
 
-		@boundl = minx
-		@boundr = minx
+		@minx = minx
+		@maxx = maxx
 
 	end
 
