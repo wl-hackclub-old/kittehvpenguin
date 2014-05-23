@@ -12,13 +12,14 @@ end
 
 class GameWindow < Gosu::Window
 	def initialize
-		super 640, 480, false
+		super 1024, 640, false
 		self.caption = "Teh Kittehs"
 
 		@menu = true
 		@in_game = false
 		@credits = false
 		@safe = true
+		@can_shoot = true
 
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
@@ -28,7 +29,7 @@ class GameWindow < Gosu::Window
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 		@health = Health.new(self)
 
-		@snowball = Snowball.new(self)
+		@snowballs = []
 
 		@kitty = Kitty.new(self)
 	end
@@ -43,7 +44,18 @@ class GameWindow < Gosu::Window
 				@player.move_right
 			end
 
+			if button_down? Gosu::KbSpace then
+				if @can_shoot
+					@snowballs[@snowballs.length] = Snowball.new(self, @player.x + 20, @player.y + 30, true)
+					@can_shoot = false
+				end
+			end
+
 			@player.move
+			@snowballs.each do |s|
+				s.move
+			end
+
 			@kitty.move
 		elsif @credits || !@safe
 			if button_down? Gosu::KbEscape then
@@ -68,10 +80,12 @@ class GameWindow < Gosu::Window
 			#Drawing Actors
 			@background_image.draw(0, 0, ZOrder::Background)
 			@player.draw
-			@font.draw_rel("#{@player.score}", 630, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
+			@font.draw_rel("#{@player.score}", self.width - 10, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
 			@font.draw("Health: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
 			@health.draw_health(@player.health, 72, 13)
-			@snowball.draw
+			@snowballs.each do |s|
+				s.draw
+			end
 			@kitty.draw
 		elsif @credits
 			#Drawing Credits
@@ -104,6 +118,8 @@ class GameWindow < Gosu::Window
 		when Gosu::KbEscape
 			@safe = true
 			@menu = true
+		when Gosu::KbSpace
+			@can_shoot = true
 		end
 	end
 end
