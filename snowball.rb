@@ -18,9 +18,9 @@ class Snowball
 		@y = ypos
 		
 		if dir
-			@vel_x = 15
+			@vel_x = 13
 		else
-			@vel_x = -15
+			@vel_x = -13
 		end
 	end
 
