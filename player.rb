@@ -50,8 +50,8 @@ class Player
 
 		if @x < @boundl
 			@x = @boundl
-		elsif @x > @boundr
-			@x = @boundr
+		elsif @x > @boundr - @image.width
+			@x = @boundr - @image.width
 		end
 
 		@y += @vel_y

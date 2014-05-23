@@ -23,7 +23,7 @@ class GameWindow < Gosu::Window
 
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
-		@player = Player.new(self, -180, 240)
+		@player = Player.new(self, 0, self.width)
 		@player.warp(0, 0)
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
