@@ -3,10 +3,11 @@ require_relative "player"
 require_relative "health"
 require_relative "constants"
 require_relative "snowball"
+require_relative "kitty"
 require "gosu"
 
 module ZOrder
-	Background, Snowball, Player, UI = *0..3
+	Background, Snowball, Player, Kitty, UI = *0..4
 end
 
 class GameWindow < Gosu::Window
@@ -28,6 +29,8 @@ class GameWindow < Gosu::Window
 		@health = Health.new(self)
 
 		@snowball = Snowball.new(self)
+
+		@kitty = Kitty.new(self)
 	end
 
 	def update
@@ -41,6 +44,7 @@ class GameWindow < Gosu::Window
 			end
 
 			@player.move
+			@kitty.move
 		elsif @credits || !@safe
 			if button_down? Gosu::KbEscape then
 				@credits = false
@@ -68,6 +72,7 @@ class GameWindow < Gosu::Window
 			@font.draw("Health: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
 			@health.draw_health(@player.health, 72, 13)
 			@snowball.draw
+			@kitty.draw
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
