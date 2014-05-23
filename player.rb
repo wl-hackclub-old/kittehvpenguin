@@ -29,6 +29,14 @@ class Player
 
 	attr_accessor :x, :y
 
+	def width
+		@image.width
+	end
+
+	def length
+		@image.length
+	end
+
 	# we could also just have a setter then do @player.health =- blah
 	# or use attr_accessor
 	def take_damage(amount = 1)

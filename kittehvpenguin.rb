@@ -1,10 +1,11 @@
 #! /usr/bin/env ruby
-require_relative "player"
-require_relative "health"
-require_relative "constants"
-require_relative "snowball"
-require_relative "kitty"
 require "gosu"
+
+require_relative "constants"
+require_relative "health"
+require_relative "kitty"
+require_relative "player"
+require_relative "snowball"
 
 module ZOrder
 	Background, Player, Kitty, Snowball, UI = *0..4
@@ -53,7 +54,7 @@ class GameWindow < Gosu::Window
 
 			if button_down? Gosu::KbSpace then
 				if @player.can_shoot
-					@snowballs << Snowball.new(self, @player.x + 20, @player.y + 30, true)
+					@snowballs << Snowball.new(self, @player.x + @player.width - 10, @player.y + 30, true)
 					@player.can_shoot = false
 				end
 			end
@@ -133,6 +134,8 @@ class GameWindow < Gosu::Window
 			@font.draw_rel("President: Alan Min; Vice President: Christopher Cooper", (width / 2), (height / 2) + 15, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
 			@font.draw_rel("Secretary: Melinda Crane; Head Programmer: Sam Mercier", (width / 2), (height / 2) + 45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
 			@font.draw_rel("Members: Sam Craig, Linus Lee, Kristofer Rye", (width / 2), (height / 2) + 75, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("import made.with.love;", (width / 2), height - 30, ZOrder::UI, 0.5, 1.0, 1.0, 1.0, 0xffffffff)
+			@font.draw_rel("System.out.println(\"Thank you so much Mr Watson!\");", (width / 2), height, ZOrder::UI, 0.5, 1.0, 1.0, 1.0, 0xffffffff)
 		else
 			#Drawing Menu
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
