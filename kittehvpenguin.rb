@@ -7,7 +7,7 @@ require_relative "kitty"
 require "gosu"
 
 module ZOrder
-	Background, Snowball, Player, Kitty, UI = *0..4
+	Background, Player, Kitty, Snowball, UI = *0..4
 end
 
 class GameWindow < Gosu::Window
@@ -19,18 +19,22 @@ class GameWindow < Gosu::Window
 		@in_game = false
 		@credits = false
 		@safe = true
+		@game_over = false
+		@difficulty = 1
 
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
 		@player = Player.new(self, 0, self.width, 0, self.height)
-		@player.warp(0, 0)
+		@player.warp(0, height - 128)
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 		@health = Health.new(self)
 
 		@snowballs = []
 
-		@kitty = Kitty.new(self)
+		@kittysnowballs = []
+
+		@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
 	end
 
 	def update
@@ -43,23 +47,45 @@ class GameWindow < Gosu::Window
 				@player.move_right
 			end
 
-			if button_down?(Gosu::KbW)
+			if button_down?(Gosu::KbUp) || button_down?(Gosu::GpUp)|| button_down?(Gosu::KbW)
 				@player.jump
 			end
 
 			if button_down? Gosu::KbSpace then
 				if @player.can_shoot
-					@snowballs[@snowballs.length] = Snowball.new(self, @player.x + 20, @player.y + 30, true)
+					@snowballs << Snowball.new(self, @player.x + 20, @player.y + 30, true)
 					@player.can_shoot = false
 				end
+			end
+			
+			if (snowball = @kitty.fire?)
+				@kittysnowballs << snowball
 			end
 
 			@player.move
 			@snowballs.each do |s|
 				s.move
+				if s.clip(@kitty.x, @kitty.y, @kitty.x + 240, @kitty.y + 180)
+					@difficulty += 1
+					@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
+					@player.cats @difficulty
+					@player.take_damage -3
+					s.x = 1200 # dirty hack to get it off the screen (and no longer clipping)
+				end
 			end
 
 			@kitty.move
+			@kittysnowballs.each do |s|
+				s.move
+				if s.clip(@player.x, @player.y, @player.x + 128, @player.y + 128)
+					@player.take_damage 1
+					s.x = -100 # dirty hack to get it off the screen (and no longer clipping)
+				end
+			end
+
+			if @player.health <= 0
+				@game_over = true
+			end
 		elsif @credits || !@safe
 			if button_down? Gosu::KbEscape then
 				@credits = false
@@ -81,15 +107,25 @@ class GameWindow < Gosu::Window
 	def draw
 		if !@menu
 			#Drawing Actors
-			@background_image.draw(0, 0, ZOrder::Background)
+			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, @game_over ? 0xffff5555 : 0xffffffff)
 			@player.draw
-			@font.draw_rel("#{@player.score}", self.width - 10, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
+			t_width = @font.text_width("Score: #{@player.score}")
+			@font.draw("Score: #{@player.score}", width - t_width - 30, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
+			@font.draw_rel("Difficulty: #{@difficulty}", (width / 2) + 90, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
 			@font.draw("Health: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
 			@health.draw_health(@player.health, 72, 13)
 			@snowballs.each do |s|
 				s.draw
 			end
 			@kitty.draw
+			@kittysnowballs.each do |s|
+				s.draw
+			end
+			if @game_over
+				@font.draw_rel("You scored #{@player.score}.", (width / 2), (height / 2) - 70, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffffffff) 
+				@font.draw_rel("Game Over.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffff0000) 
+				@font.draw_rel("Press R to restart.", (width / 2), (height / 2) + 20, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffff0000)
+			end
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
@@ -108,10 +144,20 @@ class GameWindow < Gosu::Window
 
 	def button_down(id)
 		case id
-		when Gosu::KbUp
-			@player.take_damage 1
-		when Gosu::GpButton0
-			@player.take_damage 1
+		# when Gosu::KbUp
+		# 	@player.take_damage 1
+		# when Gosu::GpButton0
+		# 	@player.take_damage 1
+		# when Gosu::KbN
+		# 	@kitty = Kitty.new(self, 0.05)
+		when Gosu::KbR
+			if @game_over
+				@game_over = false
+				@player = Player.new(self, 0, self.width, 0, self.height)
+				@snowballs = []
+				@kittysnowballs = []
+				@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
+			end
 		end
 	end
 

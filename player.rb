@@ -33,6 +33,7 @@ class Player
 	# or use attr_accessor
 	def take_damage(amount = 1)
 		@health -= amount
+		@health = 20 if @health > 20
 	end
 
 	attr_reader :score
@@ -55,7 +56,7 @@ class Player
 
 	def jump
 		if @on_ground
-			@vel_y -= 10
+			@vel_y -= 20
 			@on_ground = false
 		end
 	end
@@ -79,7 +80,7 @@ class Player
 			@on_ground = true
 		end
 
-		@vel_y += 0.5 unless @on_ground
+		@vel_y += 0.8 unless @on_ground
 		@vel_x *= 0.80
 	end
 
