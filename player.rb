@@ -14,10 +14,16 @@ class Player
 
 		@miny = miny
 		@maxy = maxy
+
+		@on_ground = false
+		@can_shoot = true
 	end
 
 	attr_accessor :minx
 	attr_accessor :maxx
+	attr_accessor :miny
+	attr_accessor :maxy
+	attr_accessor :can_shoot
 
 	attr_reader :health
 
@@ -48,7 +54,10 @@ class Player
 	end
 
 	def jump
-		@vel_y -= 4
+		if @on_ground
+			@vel_y -= 10
+			@on_ground = false
+		end
 	end
 
 	def move
@@ -67,9 +76,10 @@ class Player
 		elsif @y > @maxy - @image.height
 			@y = @maxy - @image.height
 			@vel_y = 0.0
+			@on_ground = true
 		end
 
-		@vel_y += 1.0
+		@vel_y += 0.5 unless @on_ground
 		@vel_x *= 0.80
 	end
 

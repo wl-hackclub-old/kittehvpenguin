@@ -19,7 +19,6 @@ class GameWindow < Gosu::Window
 		@in_game = false
 		@credits = false
 		@safe = true
-		@can_shoot = true
 
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
@@ -49,9 +48,9 @@ class GameWindow < Gosu::Window
 			end
 
 			if button_down? Gosu::KbSpace then
-				if @can_shoot
+				if @player.can_shoot
 					@snowballs[@snowballs.length] = Snowball.new(self, @player.x + 20, @player.y + 30, true)
-					@can_shoot = false
+					@player.can_shoot = false
 				end
 			end
 
@@ -123,7 +122,7 @@ class GameWindow < Gosu::Window
 			@safe = true
 			@menu = true
 		when Gosu::KbSpace
-			@can_shoot = true
+			@player.can_shoot = true
 		end
 	end
 end
