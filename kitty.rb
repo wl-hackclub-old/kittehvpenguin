@@ -14,6 +14,6 @@ class Kitty
 	end
 
 	def draw
-		@kimg.draw(@x, Math.sin(@t)*120+140, ZOrder::Kitty)
+		@kimg.draw(@x, Math.sin(@t) * 120 + 140, ZOrder::Kitty)
 	end
 end

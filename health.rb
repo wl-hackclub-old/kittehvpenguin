@@ -1,5 +1,6 @@
-require_relative "circle"
 require "gosu"
+
+require_relative "circle"
 
 class Health
 	def initialize(window)
