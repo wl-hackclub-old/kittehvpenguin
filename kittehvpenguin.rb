@@ -97,7 +97,7 @@ class GameWindow < Gosu::Window
 			@player.move
 			@snowballs.each do |s|
 				s.move
-				if s.clip(@kitty.x, @kitty.y, @kitty.x + 240, @kitty.y + 180)
+				if s.clip(@kitty.x, @kitty.y, @kitty.x + @kitty.width, @kitty.y + @kitty.height)
 					@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
 					@player.cats @difficulty
 					@player.snowballs += 2 if @player.snowballs <= 30
@@ -156,8 +156,8 @@ class GameWindow < Gosu::Window
 				s.draw
 			end
 			if @game_over
-				@font.draw_rel("You scored #{@player.score}.", (width / 2), (height / 2) - 70, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffffffff) 
-				@font.draw_rel("Game Over.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffff0000) 
+				@font.draw_rel("You scored #{@player.score}.", (width / 2), (height / 2) - 70, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffffffff)
+				@font.draw_rel("Game Over.", (width / 2), (height / 2) - 15, ZOrder::UI, 0.5, 0.5, 3.0, 3.0, 0xffff0000)
 				@font.draw_rel("Press R to restart.", (width / 2), (height / 2) + 20, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xffff0000)
 			end
 		elsif @credits

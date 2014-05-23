@@ -12,6 +12,14 @@ class Kitty
 
 	attr_reader :x
 
+	def width
+		@img.width
+	end
+
+	def height
+		@img.height
+	end
+
 	def y
 		Math.sin(@t) * 80 + 360
 	end
