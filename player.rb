@@ -1,7 +1,8 @@
-require 'gosu'
+require "gosu"
+
 class Player
 	def initialize(window, boundl, boundr)
-		@image = Gosu::Image.new(window, "media/hero.png", false)
+		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "hero.png"), false)
 		@x = @y = @vel_x = 0.0
 		@score = 0
 		@health = 10
@@ -13,7 +14,12 @@ class Player
 	attr_accessor :boundl
 	attr_accessor :boundr
 
-	attr_accessor :health
+	attr_reader :health
+
+	# we could also just have a setter then do @player.health =- blah
+	def take_damage(amount = 1)
+		@health -= amount
+	end
 
 	attr_reader :score
 
@@ -39,7 +45,6 @@ class Player
 		end
 
 		@vel_x *= 0.95
-		puts @x
 	end
 
 	def draw
