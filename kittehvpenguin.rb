@@ -3,10 +3,11 @@ require_relative "player"
 require_relative "health"
 require_relative "constants"
 require_relative "snowball"
+require_relative "kitty"
 require "gosu"
 
 module ZOrder
-	Background, Snowball, Player, UI = *0..3
+	Background, Snowball, Player, Kitty, UI = *0..4
 end
 
 class GameWindow < Gosu::Window
@@ -22,25 +23,32 @@ class GameWindow < Gosu::Window
 
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
-		@player = Player.new(self)
-		@player.warp(320, 240)
+		@player = Player.new(self, -180, 240)
+		@player.warp(0, 0)
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 		@health = Health.new(self)
 
+<<<<<<< HEAD
 		@snowballs = []
+=======
+		@snowball = Snowball.new(self)
+
+		@kitty = Kitty.new(self)
+>>>>>>> 021c380dd71c5587dc0f6d2a8cfbb754c9df85c2
 	end
 
 	def update
 		if !@menu
-			if button_down? Gosu::KbLeft or button_down? Gosu::GpLeft then
+			if button_down?(Gosu::KbLeft) || button_down?(Gosu::GpLeft)
 				@player.move_left
 			end
 
-			if button_down? Gosu::KbRight or button_down? Gosu::GpRight then
+			if button_down?(Gosu::KbRight) || button_down?(Gosu::GpRight)
 				@player.move_right
 			end
 
+<<<<<<< HEAD
 			if button_down? Gosu::KbSpace then
 				if @can_shoot
 					@snowballs[@snowballs.length] = Snowball.new(self, @player.x + 20, @player.y + 30, true)
@@ -53,6 +61,10 @@ class GameWindow < Gosu::Window
 				s.move
 			end
 
+=======
+			@player.move
+			@kitty.move
+>>>>>>> 021c380dd71c5587dc0f6d2a8cfbb754c9df85c2
 		elsif @credits || !@safe
 			if button_down? Gosu::KbEscape then
 				@credits = false
@@ -60,7 +72,7 @@ class GameWindow < Gosu::Window
 			end
 		else
 			#Menu Controls
-			if button_down? Gosu::KbEnter or button_down? Gosu::KbReturn then
+			if button_down? Gosu::KbEnter or button_down? Gosu::KbReturn
 				@menu = false
 				@in_game = true
 			elsif button_down? Gosu::KbEscape then
@@ -79,9 +91,14 @@ class GameWindow < Gosu::Window
 			@font.draw_rel("#{@player.score}", self.width - 10, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
 			@font.draw("Health: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
 			@health.draw_health(@player.health, 72, 13)
+<<<<<<< HEAD
 			@snowballs.each do |s|
 				s.draw
 			end
+=======
+			@snowball.draw
+			@kitty.draw
+>>>>>>> 021c380dd71c5587dc0f6d2a8cfbb754c9df85c2
 		elsif @credits
 			#Drawing Credits
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, 0xff535353)
@@ -98,9 +115,19 @@ class GameWindow < Gosu::Window
 		end
 	end
 
+	def button_down(id)
+		case id
+		when Gosu::KbUp
+			@player.take_damage 1
+		when Gosu::GpButton0
+			@player.take_damage 1
+		end
+	end
+
 	def button_up(id)
+		case id
 		#Open Menu Code
-		if id == Gosu::KbEscape
+		when Gosu::KbEscape
 			@safe = true
 			@menu = true
 		elsif id == Gosu::KbSpace

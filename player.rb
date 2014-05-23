@@ -1,25 +1,31 @@
 require "gosu"
 
 class Player
-	def initialize(window)
+	def initialize(window, boundl, boundr)
 		@image = Gosu::Image.new(window, File.join(Constants::RESOURCE_DIRECTORY, "hero.png"), false)
 		@x = @y = @vel_x = @vel_y = 0.0
 		@score = 0
 		@health = 10
+<<<<<<< HEAD
 		@score = 0
+=======
+		@score = 10000
+		@boundl = boundl
+		@boundr = boundr
+>>>>>>> 021c380dd71c5587dc0f6d2a8cfbb754c9df85c2
 	end
 
-	def health
-		@health
-	end
+	attr_accessor :boundl
+	attr_accessor :boundr
 
+	attr_reader :health
+
+	# we could also just have a setter then do @player.health =- blah
 	def take_damage(amount = 1)
 		@health -= amount
 	end
 
-	def score
-		@score
-	end
+	attr_reader :score
 
 	def cats(amount = 1)
 		@score += amount
@@ -38,10 +44,12 @@ class Player
 	end
 
 	def move
-		if ((@x >= 320 && @vel_x <= 0) || (@x <= 160 && @vel_x >=0))
-			@x += @vel_x
-		elsif @x < 320 && @x > 160
-			@x += @vel_x
+		@x += @vel_x
+
+		if @x < @boundl
+			@x = @boundl
+		elsif @x > @boundr
+			@x = @boundr
 		end
 
 		@y += @vel_y
