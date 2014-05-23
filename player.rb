@@ -6,6 +6,7 @@ class Player
 		@x = @y = @vel_x = @vel_y = 0.0
 		@score = 0
 		@health = 10
+		@snowballs = 10
 
 		@score = 0
 
@@ -16,14 +17,13 @@ class Player
 		@maxy = maxy
 
 		@on_ground = false
-		@can_shoot = true
 	end
 
 	attr_accessor :minx
 	attr_accessor :maxx
 	attr_accessor :miny
 	attr_accessor :maxy
-	attr_accessor :can_shoot
+	attr_accessor :snowballs
 
 	attr_reader :health
 

@@ -25,11 +25,12 @@ class GameWindow < Gosu::Window
 
 		@background_image = Gosu::Image.new(self, File.join(Constants::RESOURCE_DIRECTORY, "bg.png"), true)
 
-		@player = Player.new(self, 0, self.width, 0, self.height)
+		@player = Player.new(self, 0, self.width / 2, 0, self.height)
 		@player.warp(0, height - 128)
 
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 20)
 		@health = Health.new(self)
+		@snowballmeter = CircleMeter.new(self)
 
 		@snowballs = []
 
@@ -38,27 +39,57 @@ class GameWindow < Gosu::Window
 		@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
 	end
 
+	def button_down(id)
+		case id
+		# when Gosu::KbUp
+		# 	@player.take_damage 1
+		# when Gosu::GpButton0
+		# 	@player.take_damage 1
+		# when Gosu::KbN
+		# 	@kitty = Kitty.new(self, 0.05)
+		when Gosu::KbSpace
+			if !@game_over && @player.snowballs > 0
+				@snowballs << Snowball.new(self, @player.x + @player.width - 10, @player.y + 30, true)
+				@player.snowballs -= 1
+			end
+		when Gosu::KbR
+			if @game_over
+				@game_over = false
+				@player = Player.new(self, 0, self.width / 2, 0, self.height)
+				@player.warp(0, height - 128)
+				@snowballs = []
+				@kittysnowballs = []
+				@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
+				@difficulty = 1
+			end
+		end
+	end
+
+	def button_up(id)
+		case id
+		#Open Menu Code
+		when Gosu::KbEscape
+			@safe = true
+			@menu = true
+		end
+	end
+
 	def update
 		if !@menu
-			if button_down?(Gosu::KbLeft) || button_down?(Gosu::GpLeft) || button_down?(Gosu::KbA)
-				@player.move_left
-			end
+			if !@game_over
+				if button_down?(Gosu::KbLeft) || button_down?(Gosu::GpLeft) || button_down?(Gosu::KbA)
+					@player.move_left
+				end
 
-			if button_down?(Gosu::KbRight) || button_down?(Gosu::GpRight) || button_down?(Gosu::KbD)
-				@player.move_right
-			end
+				if button_down?(Gosu::KbRight) || button_down?(Gosu::GpRight) || button_down?(Gosu::KbD)
+					@player.move_right
+				end
 
-			if button_down?(Gosu::KbUp) || button_down?(Gosu::GpUp)|| button_down?(Gosu::KbW)
-				@player.jump
-			end
-
-			if button_down? Gosu::KbSpace then
-				if @player.can_shoot
-					@snowballs << Snowball.new(self, @player.x + @player.width - 10, @player.y + 30, true)
-					@player.can_shoot = false
+				if button_down?(Gosu::KbUp) || button_down?(Gosu::GpUp)|| button_down?(Gosu::KbW)
+					@player.jump
 				end
 			end
-			
+
 			if (snowball = @kitty.fire?)
 				@kittysnowballs << snowball
 			end
@@ -67,10 +98,11 @@ class GameWindow < Gosu::Window
 			@snowballs.each do |s|
 				s.move
 				if s.clip(@kitty.x, @kitty.y, @kitty.x + 240, @kitty.y + 180)
-					@difficulty += 1
 					@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
 					@player.cats @difficulty
+					@player.snowballs += 2 if @player.snowballs <= 30
 					@player.take_damage -3
+					@difficulty += 1
 					s.x = 1200 # dirty hack to get it off the screen (and no longer clipping)
 				end
 			end
@@ -110,11 +142,12 @@ class GameWindow < Gosu::Window
 			#Drawing Actors
 			@background_image.draw(0, 0, ZOrder::Background, 1.0, 1.0, @game_over ? 0xffff5555 : 0xffffffff)
 			@player.draw
-			t_width = @font.text_width("Score: #{@player.score}")
-			@font.draw("Score: #{@player.score}", width - t_width - 30, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
-			@font.draw_rel("Difficulty: #{@difficulty}", (width / 2) + 90, 30, ZOrder::UI, 1.0, 1.0, 1.0, 1.0, 0xffffff00)
+			@font.draw_rel("Score: #{@player.score}", width - 30, 10, ZOrder::UI, 1.0, 0, 1.0, 1.0, 0xffffff00)
+			@font.draw_rel("Difficulty: #{@difficulty}", (width / 2), 10, ZOrder::UI, 0.5, 0, 1.0, 1.0, 0xffffff00)
 			@font.draw("Health: ", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00)
-			@health.draw_health(@player.health, 72, 13)
+			@health.draw(@player.health, 72, 13)
+			@font.draw("Snowballs: ", 10, 30, ZOrder::UI, 1.0, 1.0, 0xffffff00)
+			@snowballmeter.draw(@player.snowballs, 102, 33)
 			@snowballs.each do |s|
 				s.draw
 			end
@@ -142,36 +175,6 @@ class GameWindow < Gosu::Window
 			@font.draw_rel(@in_game ? "Continue (Enter)" : "Start (Enter)", (width / 2) , (height / 2) - 45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
 			@font.draw_rel("Credits (C)", (width / 2) , (height / 2), ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
 			@font.draw_rel("Exit (Escape)", (width / 2) , (height / 2) + 45, ZOrder::UI, 0.5, 0.5, 1.0, 1.0, 0xfff2ff00)
-		end
-	end
-
-	def button_down(id)
-		case id
-		# when Gosu::KbUp
-		# 	@player.take_damage 1
-		# when Gosu::GpButton0
-		# 	@player.take_damage 1
-		# when Gosu::KbN
-		# 	@kitty = Kitty.new(self, 0.05)
-		when Gosu::KbR
-			if @game_over
-				@game_over = false
-				@player = Player.new(self, 0, self.width, 0, self.height)
-				@snowballs = []
-				@kittysnowballs = []
-				@kitty = Kitty.new(self, 0.03 * Math.sqrt(@difficulty))
-			end
-		end
-	end
-
-	def button_up(id)
-		case id
-		#Open Menu Code
-		when Gosu::KbEscape
-			@safe = true
-			@menu = true
-		when Gosu::KbSpace
-			@player.can_shoot = true
 		end
 	end
 end
