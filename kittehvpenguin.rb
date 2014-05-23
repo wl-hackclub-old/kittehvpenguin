@@ -1,10 +1,11 @@
 #! /usr/bin/env ruby
-require_relative "player"
-require_relative "health"
-require_relative "constants"
-require_relative "snowball"
-require_relative "kitty"
 require "gosu"
+
+require_relative "constants"
+require_relative "health"
+require_relative "kitty"
+require_relative "player"
+require_relative "snowball"
 
 module ZOrder
 	Background, Snowball, Player, Kitty, UI = *0..4

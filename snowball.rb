@@ -1,11 +1,13 @@
-require_relative 'circle'
-require 'gosu'
+require "gosu"
+
+require_relative "circle"
 
 class Snowball
 	attr_reader :x, :y
 
 	def initialize(window, xpos, ypos, dir)
 		@img = Gosu::Image.new(window, Circle.new(10), false)
+		
 		if dir
 			@color = Gosu::Color.new(0xffffffff)
 		else
@@ -14,6 +16,7 @@ class Snowball
 
 		@x = xpos
 		@y = ypos
+		
 		if dir
 			@vel_x = 15
 		else
