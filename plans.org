@@ -1,0 +1,8 @@
+* TODO Things To Do [0/6]
+- [ ] Snowballs do damage
+- [ ] Enemies are things
+- [ ] Enemies throw snowballs
+- [ ] Scoring if collecting cats
+- [ ] Cats spawning
+- [ ] New games
+- [ ] Fullscreen????

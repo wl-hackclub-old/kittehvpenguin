@@ -29,6 +29,14 @@ class Player
 
 	attr_accessor :x, :y
 
+	def width
+		@image.width
+	end
+
+	def length
+		@image.length
+	end
+
 	# we could also just have a setter then do @player.health =- blah
 	# or use attr_accessor
 	def take_damage(amount = 1)
@@ -55,7 +63,7 @@ class Player
 
 	def jump
 		if @on_ground
-			@vel_y -= 10
+			@vel_y -= 15
 			@on_ground = false
 		end
 	end
